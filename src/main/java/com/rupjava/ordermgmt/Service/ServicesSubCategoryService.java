@@ -11,4 +11,6 @@ public interface ServicesSubCategoryService {
     void deleteSubCategory(Long id);
 
     List<ServiceSubCategory> getAllSubCategories();
+
+    ServiceSubCategory updateSubCategory(Long id, ServiceSubCategory subCategory);
 }

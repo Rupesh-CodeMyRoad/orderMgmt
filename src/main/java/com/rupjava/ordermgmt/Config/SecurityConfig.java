@@ -30,11 +30,11 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/public/**").permitAll() // Public endpoints
-                        .requestMatchers("/api/auth/**").permitAll() // Public access for authentication endpoints
+                        .requestMatchers("/api/public/**").permitAll() // Logged in Endpoints
+                        .requestMatchers("/api/auth/**").permitAll() // Public access for login and register
                         .requestMatchers("/api/admin/**").hasRole("ADMIN") // Admin-specific endpoints
                         .requestMatchers("/api/user/**").hasRole("USER") // User-specific endpoints
-                        .anyRequest().authenticated() // All other requests require authentication
+                        .anyRequest().authenticated() //
                 )
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
@@ -49,7 +49,7 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID") // Remove session cookies
                         .invalidateHttpSession(true)
                 )
-                .httpBasic(Customizer.withDefaults()); // Enable basic authentication
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

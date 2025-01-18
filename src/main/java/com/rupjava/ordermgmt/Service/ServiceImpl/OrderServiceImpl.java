@@ -1,10 +1,11 @@
 package com.rupjava.ordermgmt.Service.ServiceImpl;
 
+import com.rupjava.ordermgmt.Entity.Customer;
 import com.rupjava.ordermgmt.Entity.Order;
-import com.rupjava.ordermgmt.Entity.ServiceSubCategory;
+import com.rupjava.ordermgmt.Repository.CustomerRepository;
 import com.rupjava.ordermgmt.Repository.OrderRepository;
-import com.rupjava.ordermgmt.Repository.ServicesCategoryRepository;
 import com.rupjava.ordermgmt.Service.OrderService;
+import com.rupjava.ordermgmt.Utils.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,10 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
-    private ServicesCategoryRepository servicesCategoryRepository;
+    private EmailService emailService;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
 
     public List<Order> getAllOrders() {
@@ -24,14 +28,34 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public Order createOrder(Order order, List<Long> serviceIds) {
-        // Link services to the order
-        order.setServices(serviceIds); // Directly set the list of service IDs
 
-        // Save the order
+        Customer customer = order.getCustomer();
+        order.setServices(serviceIds);
+        emailService.sendInvoice(customer, order);
+
         return orderRepository.save(order);
     }
 
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
+    }
+
+    public Order getOrderById(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + id));
+    }
+
+    @Override
+    public Order updateOrder(Long id, Order orderDetails) {
+        Order existingOrder = getOrderById(id);
+
+        // Update fields
+        existingOrder.setCustomer(orderDetails.getCustomer());
+        existingOrder.setTotalBill(orderDetails.getTotalBill());
+        existingOrder.setMessage(orderDetails.getMessage());
+        existingOrder.setServices(orderDetails.getServices());
+
+        // Save updated order
+        return orderRepository.save(existingOrder);
     }
 }

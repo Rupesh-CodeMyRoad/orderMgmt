@@ -25,7 +25,7 @@ public class AdminUserInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         String adminEmail = "admin@example.com";
         String adminPassword = "admin123";
-        String adminRole = "ROLE_ADMIN";
+        String adminRole = "ADMIN";
 
         // Check if admin user already exists
         if (userRepository.findByEmail(adminEmail).isEmpty()) {
@@ -42,4 +42,5 @@ public class AdminUserInitializer implements CommandLineRunner {
             System.out.println("Admin user already exists.");
         }
     }
+
 }

@@ -18,6 +18,9 @@ import java.util.Map;
 @RequestMapping("/api/user")
 public class UserController {
 
+    @Autowired
+    private CustomerService customerService;
+
 
 
     @GetMapping("/getDetail")
@@ -31,4 +34,5 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
 }
